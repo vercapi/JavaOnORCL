@@ -48,6 +48,15 @@
    #+BEGIN_SRC sh
      docker exec -it <container_name> /bin/bash
    #+END_SRC
-   
 
+   Test script to see if the docker is working
+   
+** TODO Setup the DB
+
+   Running scripts via SQLcl. SQLcl needs to be installed locally.
+
+** TODO Setup ORDS
+
+   ORDS isntallation [[https://docs.oracle.com/cd/E56351_01/doc.30/e87809/installing-REST-data-services.htm#AELIG7015][documentation]]
+   
 * TODO JOOQ
