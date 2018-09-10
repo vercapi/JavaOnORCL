@@ -2,4 +2,52 @@
 
 * TODO Java on top of ORDS
 
+** TODO Setup docker with DB
+
+   [[https://container-registry.oracle.com/][Instructions]] on downloading the docker/
+   On this page you will need to agree to the license first. Then you can do docker login and pull.
+
+   #+BEGIN_SRC sh
+   docker login container-registry.oracle.com
+   docker pull container-registry.oracle.com/database/standard:12.1.0.2
+   #+END_SRC
+
+   #+BEGIN_SRC conf :tangle environment.conf
+     ## db sid (name)
+     ## default : ORCL
+     ## cannot be longer than 8 characters
+
+     DB_SID=ORCL
+
+     ## db passwd
+     ## default : Oracle
+
+     DB_PASSWD=Welcome1
+
+     ## db domain
+     ## default : localdomain
+
+     DB_DOMAIN=vercapi.be
+
+     ## db bundle
+     ## default : basic
+     ## valid : basic / high / extreme 
+     ## (high and extreme are only available for enterprise edition)
+
+     DB_BUNDLE=basic
+
+     ## end
+   #+END_SRC
+
+   Create a DB in the docker
+   #+BEGIN_SRC sh
+     docker run -d --env-file environment.conf -p 1521:1521 -p 80:5500 -it --name C1 --shm-size="4G" ORDS_docker
+   #+END_SRC
+
+   Access the docker
+   #+BEGIN_SRC sh
+     docker exec -it <container_name> /bin/bash
+   #+END_SRC
+   
+
 * TODO JOOQ
