@@ -41,7 +41,7 @@
 
    Create a DB in the docker
    #+BEGIN_SRC sh
-     docker run -d --env-file environment.conf -p 1521:1521 -p 80:5500 -it --name C1 --shm-size="4G" ORDS_docker
+     docker run -d --env-file environment.conf -p 1521:1521 -p 80:5500 -it --name ords --shm-size="4G" container-registry-frankfurt.oracle.com/database/standard:12.1.0.2./sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
    #+END_SRC
 
    Access the docker
@@ -49,7 +49,10 @@
      docker exec -it <container_name> /bin/bash
    #+END_SRC
 
-   Test script to see if the docker is working
+   Access via sqlcl
+   #+BEGIN_SRC sh
+   ./sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
+   #+END_SRC
    
 ** TODO Setup the DB
 
