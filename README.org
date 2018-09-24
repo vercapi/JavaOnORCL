@@ -78,7 +78,7 @@
 
    Acutually create the tablespace
    #+BEGIN_SRC sh
-   cat create_ords_tablespace.sql | sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
+   cat create_ords_tablespace.sql | sql sys/Welcome1@//localhost:1521/PDB1.vercapi.be as sysdba
    #+END_SRC
 
    Configuration file for setting up ORDS
@@ -118,7 +118,19 @@
    #+BEGIN_SRC sh :dir /opt/oracle/apps/ords
 
    java -jar ords.war 
-   #+END_SRC
-   
+   #+END_SRC   
     
+** TODO Setup Datamodel
+  
+  #+BEGIN_SRC sql :tangle create_user.sql
+  create user contribeer identified by Welcome1;
+  grant connect, resource to contribeer;
+  #+END_SRC
+
+  #+BEGIN_SRC sh
+    cat create_user.sql | sql sys/Welcome1@//localhost:1521/PDB1.vercapi.be as sysdba
+    cat ../contribeer/src/main/database/install/table/initial_table_creation.sql | sql contribeer/Welcome1@//localhost:1521/PDB1.vercapi.be
+    cat ../contribeer/src/main/database/install/sequence/initial_sequence_creation.sql | sql contribeer/Welcome1@//localhost:1521/PDB1.vercapi.be
+  #+END_SRC
+
 * TODO JOOQ
