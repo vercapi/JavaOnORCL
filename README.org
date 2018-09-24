@@ -2,7 +2,7 @@
 
 * TODO Java on top of ORDS
 
-** TODO Setup docker with DB
+** DONE Setup docker with DB
 
    [[https://container-registry.oracle.com/][Instructions]] on downloading the docker/
    On this page you will need to agree to the license first. Then you can do docker login and pull.
@@ -51,15 +51,74 @@
 
    Access via sqlcl
    #+BEGIN_SRC sh
-   ./sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
+   sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
    #+END_SRC
    
-** TODO Setup the DB
 
-   Running scripts via SQLcl. SQLcl needs to be installed locally.
+** DONE Setup ORDS
 
-** TODO Setup ORDS
+   ORDS isntallation [[https://docs.oracle.com/cd/E56351_01/doc.30/e87809/installing-REST-data-services.htm#AELIG7015][documentation]], [[http://www.oracle.com/technetwork/developer-tools/rest-data-services/downloads/index.html][download]]
 
-   ORDS isntallation [[https://docs.oracle.com/cd/E56351_01/doc.30/e87809/installing-REST-data-services.htm#AELIG7015][documentation]]
+   #+BEGIN_SRC sh
+   mkdir -p /opt/oracle/apps/ords
+   mv ~/Downloads/ords-18.2.0.zip /opt/oracle/apps/ords
+   cd /opt/oracle/apps/ords
+   unzip ords-18.2.0.zip
+   rm ords-18.2.0.zip
+   #+END_SRC
+
+   Create tablespace code
+   #+BEGIN_SRC sql :tangle create_ords_tablespace.sql
+     CREATE TABLESPACE ORDS
+       DATAFILE 'ords.dat' 
+         SIZE 10M
+         REUSE
+         AUTOEXTEND ON NEXT 10M;
+   #+END_SRC
+
+   Acutually create the tablespace
+   #+BEGIN_SRC sh
+   cat create_ords_tablespace.sql | sql sys/Welcome1@//localhost:1521/ORCL.vercapi.be as sysdba
+   #+END_SRC
+
+   Configuration file for setting up ORDS
+   #+BEGIN_SRC conf :tangle /opt/oracle/apps/ords/params/ords_params.properties
+     db.hostname=localhost
+     db.port=1521
+     db.servicename=PDB1.vercapi.be
+     db.username=APEX_PUBLIC_USER
+     migrate.apex.rest=false
+     rest.services.apex.add=
+     rest.services.ords.add=true
+     schema.tablespace.default=SYSAUX
+     schema.tablespace.temp=TEMP
+     standalone.http.port=8080
+     user.public.password=Welcome1
+     user.tablespace.default=ORDS
+     user.tablespace.temp=TEMP
+     sys.user=sys
+     sys.password=Welcome1
+   #+END_SRC
+
+   Configure ORDS
+   #+BEGIN_SRC sh :dir /opt/oracle/apps/ords
+     mkdir config
+     java -jar ords.war configdir /opt/oracle/apps/ords/config
+     # Check what value of configdir has been set!
+     java -jar ords.war configdir
+   #+END_SRC
    
+   Run ORDS setup
+   #+BEGIN_SRC sh :dir /opt/oracle/apps/ords
+     mkdir -p /opt/oracle/apps/ords/logs/ORDS
+     java -jar ords.war setup --database ords --logDir /opt/oracle/apps/ords/logs/ORDS --silent
+   #+END_SRC
+
+   Run ORDS standalone
+   #+BEGIN_SRC sh :dir /opt/oracle/apps/ords
+
+   java -jar ords.war 
+   #+END_SRC
+   
+    
 * TODO JOOQ
